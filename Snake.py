@@ -1,8 +1,9 @@
-# import tkinter as tk
-# from tkinter import messagebox
+import tkinter as tk
+from tkinter import messagebox
 
 import pygame
 import random
+
 
 class Cube(object):
     rows = 20
@@ -166,15 +167,16 @@ def random_snack(rows, item):
     return x, y
 
 
-# def message_box(subject, content):
-#     root = tk.Tk()
-#     root.attributes("-topmost", True)
-#     root.withdraw()
-#     messagebox.showinfo(subject, content)
-#     try:
-#         root.destroy()
-#     except:
-#         pass
+def message_box(subject, content):
+    root = tk.Tk()
+    root.attributes("-topmost", True)
+    root.withdraw()
+    messagebox.showinfo(subject, content)
+    try:
+        root.destroy()
+    except:
+        pass
+
 
 def main():
     global rows, width, s, snack
@@ -195,21 +197,15 @@ def main():
             snack = Cube(random_snack(rows, s), color=(0, 255, 0))
 
         for x in range(len(s.body)):
-            if s.body[x].pos in list(map(lambda z:z.pos, s.body[x+1:])):
+            if s.body[x].pos in list(map(lambda z: z.pos, s.body[x+1:])):
                 print("Score: ", len(s.body))
                 print("You Lost", "Play Again..")
+                # message_box("You Lost", "Play Again..")
                 s.reset((10,10))
                 break
 
         re_draw_window(window)
 
     pass
-
-# rows =
-# w =
-# h =
-#
-# Cube.rows = rows
-# Cube.w = w
 
 main()
