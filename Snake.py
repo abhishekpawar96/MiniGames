@@ -1,8 +1,8 @@
-import tkinter as tk
-from tkinter import messagebox
-
 import pygame
 import random
+import sys
+import tkinter as tk
+from tkinter import messagebox
 
 
 class Cube(object):
@@ -51,7 +51,7 @@ class Snake(object):
     def move(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
+                sys.exit()
 
             # Register and listen to key stroke
             keys = pygame.key.get_pressed()
@@ -192,7 +192,7 @@ def main():
         pygame.time.delay(50)
         clock.tick(10)
         s.move()
-        if  s.body[0].pos == snack.pos:
+        if s.body[0].pos == snack.pos:
             s.add_cube()
             snack = Cube(random_snack(rows, s), color=(0, 255, 0))
 
