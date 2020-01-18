@@ -1,3 +1,5 @@
+import sys
+
 import pygame
 
 from Tetris.Colors import RED, WHITE, BLACK, GREY
@@ -42,7 +44,7 @@ def draw_grid(s, row, col):
             pygame.draw.line(s, GREY, j1, j2)  # vertical lines
 
 
-def draw_window(s, g):
+def draw_window(s, g, score=0 ):
     s.fill(BLACK)
 
     # Tetris Title
@@ -59,12 +61,21 @@ def draw_window(s, g):
     draw_grid(s, 20, 10)
     pygame.draw.rect(s, RED, (TOP_LEFT_X, TOP_LEFT_Y, PLAY_WIDTH, PLAY_HEIGHT), 5)
 
+    # score
+    label = get_label('Score ' + str(score), BLOCK_SIZE)
+
+    sx = TOP_LEFT_X + PLAY_WIDTH + 50
+    sy = TOP_LEFT_Y + PLAY_HEIGHT / 2 - 100
+
+    s.blit(label, (sx + 20, sy + 160))
+
 
 def draw_next_shape(shape, surface):
     label = get_label('Next Shape', BLOCK_SIZE)
 
     sx = TOP_LEFT_X + PLAY_WIDTH + 50
-    sy = TOP_LEFT_Y + PLAY_HEIGHT/2 - 100
+    sy = TOP_LEFT_Y + PLAY_HEIGHT / 2 - 100
+
     shape_mode = shape.shape[shape.rotation % len(shape.shape)]
 
     for i, line in enumerate(shape_mode):
@@ -95,13 +106,21 @@ def main():
     next_piece = get_piece()
     clock = pygame.time.Clock()
     fall_time = 0
+    level_time = 0
+    score = 0
 
     while run:
         fall_speed = 0.27
 
         grid = create(locked_positions)
         fall_time += clock.get_rawtime()
+        level_time += clock.get_rawtime()
         clock.tick()
+
+        if level_time/1000 > 5:
+            level_time = 0
+            if fall_speed > 0.12:
+                fall_speed -= 0.005
 
         # PIECE FALLING CODE
         if fall_time / 1000 >= fall_speed:
@@ -139,12 +158,6 @@ def main():
                     if not valid_shape_coordinates(current_piece, grid):
                         current_piece.y -= 1
 
-                '''if event.key == pygame.K_SPACE:
-                    while valid_space(current_piece, grid):
-                        current_piece.y += 1
-                    current_piece.y -= 1
-                    print(convert_shape_format(current_piece))'''  # todo fix
-
         shape_pos = get_piece_coordinate(current_piece)
 
         # add piece to the grid for drawing
@@ -163,9 +176,9 @@ def main():
             change_piece = False
 
             # call four times to check for multiple clear rows
-            clear_rows(grid, locked_positions)
+            score += clear_rows(grid, locked_positions) * 10
 
-        draw_window(window, grid)
+        draw_window(window, grid, score)
         draw_next_shape(next_piece, window)
         pygame.display.update()
 
@@ -190,7 +203,9 @@ def main_menu():
 
             if event.type == pygame.KEYDOWN:
                 main()
+
     pygame.quit()
+    sys.exit()
 
 
 window = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))

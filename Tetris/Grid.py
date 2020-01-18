@@ -63,3 +63,5 @@ def clear_rows(grid, locked):
             if y < ind:
                 new_key = (x, y + inc)
                 locked[new_key] = locked.pop(key)
+
+    return inc
